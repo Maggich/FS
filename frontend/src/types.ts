@@ -1,10 +1,10 @@
-export type Lesson = {
+export type Books = {
   id: number;
   title: string;
-  level: string;
+  descriptions: string;
 };
 
-export type LessonItemProps = {
+export type BooksItemProps = {
   title: string;
-  level: string;
+  descriptions: string;
 };

@@ -1,11 +1,11 @@
-import type { LessonItemProps } from '../../types'
+// import type { BooksItemProps } from '../../types'
 
-function LessonItem({ title, level }: LessonItemProps) {
-  return (
-    <li>
-      <strong>{title}</strong> - {level}
-    </li>
-  );
-}
+// function LessonItem({ title, level }: BooksItemProps) {
+//   return (
+//     <li>
+//       <strong>{title}</strong> - {level}
+//     </li>
+//   );
+// }
 
-export default LessonItem
+// export default LessonItem
