@@ -48,51 +48,181 @@
 
 
 
-import { useState, type FormEvent } from "react";
-import ProfileCard from "././Components/ProfileCard/ProfileCard";
+// import { useState, type FormEvent, useEffect } from "react";
+// import ProfileCard from "././Components/ProfileCard/ProfileCard";
 
+
+// function App() {
+//   const [note, setNote] = useState("");
+//   const [savedMessage, setSavedMessage] = useState("");
+//   const [count, setCount] = useState(0);
+
+//   useEffect(() => {
+//     document.title = `Счетчик: ${count}`;
+//   }, [count]);
+
+
+//   function handleSubmit(event: FormEvent<HTMLFormElement>) {
+//     event.preventDefault();
+
+//     if (!note.trim()) {
+//       setSavedMessage("Сначала введи текст заметки.");
+//       return;
+//     }
+
+//     setSavedMessage(`Заметка сохранена: ${note}`);
+//     setNote("");
+//   }
+
+//   return (
+//     <>
+//       <div>
+//         <h1>Форма заметки</h1>
+
+//         <form onSubmit={handleSubmit}>
+//           <input
+//             type="text"
+//             placeholder="Введи заметку"
+//             value={note}
+//             onChange={(event) => setNote(event.target.value)}
+//           />
+
+//           <button type="submit">Сохранить</button>
+//         </form>
+
+//         <p>Текущий ввод: {note}</p>
+//         <p>{savedMessage}</p>
+//       </div>
+
+//       <div>
+//         <h1>Стили в React</h1>
+//         <ProfileCard />
+//       </div>
+//       <div>
+//         <h1>useEffect в React</h1>
+//         <p>Текущее значение: {count}</p>
+
+//         <button onClick={() => setCount(count + 1)}>+1</button>
+//         <button onClick={() => setCount(count - 1)}>-1</button>
+//       </div>
+//     </>
+//   );
+// }
+
+// export default App;
+
+
+// ЭТО РЕАЛИЗАЦИЯ GET
+// import axios from "axios";
+// import { useEffect, useState } from "react";
+
+// type Post = {
+//   id: number;
+//   title: string;
+// };
+
+// function App() {
+//   const [posts, setPosts] = useState<Post[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   useEffect(() => {
+//     async function loadPosts() {
+//       try {
+//         const response = await axios.get<Post[]>(
+//           "https://jsonplaceholder.typicode.com/posts?_limit=3"
+//         );
+
+//         setPosts(response.data);
+//       } catch (err) {
+//         const message =
+//           err instanceof Error ? err.message : "Неизвестная ошибка";
+//         setError(message);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+
+//     loadPosts();
+//   }, []);
+
+//   if (loading) {
+//     return <p>Идет загрузка...</p>;
+//   }
+
+//   if (error) {
+//     return <p>Ошибка: {error}</p>;
+//   }
+
+//   return (
+// 	    <div>
+//       <h1>Список постов</h1>
+
+//       <ul>
+//         {posts.map((post) => (
+//           <li key={post.id}>{post.title}</li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+import axios from "axios";
+import { useState } from "react";
+
+type Post = {
+  id: number;
+  title: string;
+  body: string;
+  userId: number;
+};
 
 function App() {
-  const [note, setNote] = useState("");
-  const [savedMessage, setSavedMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [result, setResult] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function createPost() {
+    try {
+      const newPost = {
+        title: title,
+        body: "Текст нового поста",
+        userId: 1,
+      };
 
-    if (!note.trim()) {
-      setSavedMessage("Сначала введи текст заметки.");
-      return;
+      const response = await axios.post<Post>(
+        "https://jsonplaceholder.typicode.com/posts",
+        newPost
+      );
+
+      setResult(`Пост создан: ${response.data.title}`);
+      setTitle("");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Неизвестная ошибка";
+
+      setResult(`Ошибка: ${message}`);
     }
-
-    setSavedMessage(`Заметка сохранена: ${note}`);
-    setNote("");
   }
 
   return (
-    <>
-      <div>
-        <h1>Форма заметки</h1>
+    <div>
+      <h1>Создание поста</h1>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Введи заметку"
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
-          />
+      <input
+        type="text"
+        placeholder="Введите заголовок"
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+      />
 
-          <button type="submit">Сохранить</button>
-        </form>
+      <button onClick={createPost}>Создать</button>
 
-        <p>Текущий ввод: {note}</p>
-        <p>{savedMessage}</p>
-      </div>
-
-      <div>
-        <h1>Стили в React</h1>
-        <ProfileCard />
-      </div>
-    </>
+      <p>{result}</p>
+    </div>
   );
 }
 
