@@ -4,6 +4,8 @@
 // import { useState } from "react"
 // import type { Lesson } from './types'
 
+// import { useEffect, useState } from "react"
+
 // function App() {
 //   const [count, setCount] = useState(10);
 //   const [ text, setText ] = useState("Темная")
@@ -171,59 +173,99 @@
 
 
 
-import axios from "axios";
-import { useState } from "react";
+// import axios from "axios";
+// import { useState } from "react";
 
-type Post = {
+// type Post = {
+//   id: number;
+//   title: string;
+//   body: string;
+//   userId: number;
+// };
+
+// function App() {
+//   const [title, setTitle] = useState("");
+//   const [result, setResult] = useState("");
+
+//   async function createPost() {
+//     try {
+//       const newPost = {
+//         title: title,
+//         body: "Текст нового поста",
+//         userId: 1,
+//       };
+
+//       const response = await axios.post<Post>(
+//         "https://jsonplaceholder.typicode.com/posts",
+//         newPost
+//       );
+
+//       setResult(`Пост создан: ${response.data.title}`);
+//       setTitle("");
+//     } catch (err) {
+//       const message =
+//         err instanceof Error ? err.message : "Неизвестная ошибка";
+
+//       setResult(`Ошибка: ${message}`);
+//     }
+//   }
+
+//   return (
+//     <div>
+//       <h1>Создание поста</h1>
+
+//       <input
+//         type="text"
+//         placeholder="Введите заголовок"
+//         value={title}
+//         onChange={(event) => setTitle(event.target.value)}
+//       />
+
+//       <button onClick={createPost}>Создать</button>
+
+//       <p>{result}</p>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import { useEffect, useState } from 'react';
+import api from './api';
+
+interface Product {
   id: number;
   title: string;
-  body: string;
-  userId: number;
-};
-
-function App() {
-  const [title, setTitle] = useState("");
-  const [result, setResult] = useState("");
-
-  async function createPost() {
-    try {
-      const newPost = {
-        title: title,
-        body: "Текст нового поста",
-        userId: 1,
-      };
-
-      const response = await axios.post<Post>(
-        "https://jsonplaceholder.typicode.com/posts",
-        newPost
-      );
-
-      setResult(`Пост создан: ${response.data.title}`);
-      setTitle("");
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Неизвестная ошибка";
-
-      setResult(`Ошибка: ${message}`);
-    }
-  }
-
-  return (
-    <div>
-      <h1>Создание поста</h1>
-
-      <input
-        type="text"
-        placeholder="Введите заголовок"
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
-      />
-
-      <button onClick={createPost}>Создать</button>
-
-      <p>{result}</p>
-    </div>
-  );
+  price: number;
 }
 
-export default App;
+function App() {
+
+  const [ products, setProducts ] = useState<Product[]>([]);
+
+  useEffect(() => {
+    api.get<Product[]>('/products/')
+      .then((response) => {
+        setProducts(response.data);
+      });
+  }, []); 
+
+
+  return (
+    <>
+      <div>
+        <h1>Products</h1>
+
+        {products.map((product) => (
+          <div key={product.id}>
+            <h2>{product.title}</h2>
+
+            <p>{product.price}</p>
+          </div>
+        ))}
+
+      </div>
+    </>
+  )
+}
+export default App
